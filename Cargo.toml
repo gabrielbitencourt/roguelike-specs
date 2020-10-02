@@ -9,3 +9,4 @@ edition = "2018"
 [dependencies]
 specs = "0.16.1"
 tcod = "0.15.0"
+rand = "0.7.3"

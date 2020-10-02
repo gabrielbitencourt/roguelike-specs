@@ -32,7 +32,8 @@ impl<'a> System<'a> for TcodSystem {
                         Some(t) => t,
                         _ => '_'
                     };
-                    self.con.put_char(c as i32, r as i32, wall_glyph, BackgroundFlag::None)
+                    self.con.rect(c as i32, r as i32, 1, 1, true, BackgroundFlag::None);
+                    // self.con.put_char(c as i32, r as i32, wall_glyph, BackgroundFlag::None)
                 }
             }
         }
