@@ -25,8 +25,11 @@ use glyph::Glyph;
 pub mod tile;
 use tile::Tile;
 
-const SCREEN_WIDTH: i32 = 160;
-const SCREEN_HEIGHT: i32 = 90;
+pub mod room;
+use room::{Room};
+
+const SCREEN_WIDTH: i32 = 128;
+const SCREEN_HEIGHT: i32 = 80;
 const LIMIT_FPS: i32 = 30;
 
 fn main() {
@@ -38,15 +41,23 @@ fn main() {
         .init();
     
     let con = Offscreen::new(SCREEN_WIDTH, SCREEN_HEIGHT);
-
     tcod::system::set_fps(LIMIT_FPS);
 
     let mut world = World::new();
-    world.insert(GameState::default());
+    world.register::<Room>();
     world.register::<Player>();
     world.register::<Input>();
     world.register::<Position>();
     world.register::<Glyph>();
+
+    let mut gamestate = GameState::default();
+    let room = Room::procedural(&mut gamestate.map);
+    world
+        .create_entity()
+        .with(room)
+        .build();
+    
+    world.insert(gamestate);
 
     world
         .create_entity()
@@ -61,12 +72,13 @@ fn main() {
 
     let mut dispatcher = DispatcherBuilder::new()
         .with(MovingSystem, "movingSys", &[])
+        // .with(RoomSystem, "roomSys", &[])
         .with_thread_local(TcodSystem { root, con })
         .build();
 
     dispatcher.setup(&mut world);
     loop {
-        dispatcher.dispatch(&mut world);
+        dispatcher.dispatch(&world);
         {
             let game_state = world.read_resource::<GameState>();
             if game_state.end {

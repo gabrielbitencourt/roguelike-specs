@@ -13,7 +13,7 @@ impl Tile {
             wall: true,
             occupied: true,
             blocked: true,
-        }
+        };
     }
     pub fn occupied(blocked: bool) -> Self {
         return Tile {
@@ -21,6 +21,6 @@ impl Tile {
             wall: false,
             occupied: true,
             blocked,
-        }
+        };
     }
 }
