@@ -7,9 +7,9 @@ pub struct Tile {
 }
 
 impl Tile {
-    pub fn wall(side: bool) -> Self {
+    pub fn wall(glyph: Option<char>) -> Self {
         return Tile {
-            glyph: if side { Some('|') } else { Some('_') },
+            glyph,
             wall: true,
             occupied: true,
             blocked: true,
