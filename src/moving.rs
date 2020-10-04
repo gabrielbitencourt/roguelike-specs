@@ -1,4 +1,4 @@
-use crate::{Input,Position,GameState,Tile,SCREEN_HEIGHT,SCREEN_WIDTH};
+use crate::{Input,Position,Map,SCREEN_HEIGHT,SCREEN_WIDTH};
 use specs::{Join, ReadStorage, System, WriteStorage, Write};
 use tcod::input::{Key, KeyCode};
 
@@ -7,9 +7,9 @@ impl<'a> System<'a> for MovingSystem {
     type SystemData = (
         ReadStorage<'a, Input>,
         WriteStorage<'a, Position>,
-        Write<'a, GameState>
+        Write<'a, Map>
     );
-    fn run(&mut self, (input, mut position, mut state): Self::SystemData) {
+    fn run(&mut self, (input, mut position, mut map_resource): Self::SystemData) {
         for (inp, pos) in (&input, &mut position).join() {
             match inp.key {
                 Some(Key {
@@ -17,10 +17,10 @@ impl<'a> System<'a> for MovingSystem {
                     ..
                 }) =>
                 {
-                    if !state.map[(pos.y as usize) - 1][pos.x as usize].occupied && pos.y > 1 {
-                        state.map[pos.y as usize][pos.x as usize] = Tile::default();
+                    if !map_resource.map[(pos.y as usize) - 1][pos.x as usize].occupied && pos.y > 1 {
+                        map_resource.map[pos.y as usize][pos.x as usize].occupied = false;
                         pos.y = pos.y - 1;
-                        state.map[pos.y as usize][pos.x as usize] = Tile::occupied(true);
+                        map_resource.map[pos.y as usize][pos.x as usize].occupied = true;
                     }
                 }
                 Some(Key {
@@ -28,10 +28,10 @@ impl<'a> System<'a> for MovingSystem {
                     ..
                 }) =>
                 {
-                    if pos.y < SCREEN_HEIGHT - 2 && !state.map[(pos.y as usize) + 1][pos.x as usize].occupied {
-                        state.map[pos.y as usize][pos.x as usize] = Tile::default();
+                    if pos.y < SCREEN_HEIGHT - 2 && !map_resource.map[(pos.y as usize) + 1][pos.x as usize].occupied {
+                        map_resource.map[pos.y as usize][pos.x as usize].occupied = false;
                         pos.y = pos.y + 1;
-                        state.map[pos.y as usize][pos.x as usize] = Tile::occupied(true);
+                        map_resource.map[pos.y as usize][pos.x as usize].occupied = true;
                     }
                 }
                 Some(Key {
@@ -39,10 +39,10 @@ impl<'a> System<'a> for MovingSystem {
                     ..
                 }) =>
                 {
-                    if !state.map[pos.y as usize][(pos.x as usize) - 1].occupied && pos.x > 1 {
-                        state.map[pos.y as usize][pos.x as usize] = Tile::default();
+                    if !map_resource.map[pos.y as usize][(pos.x as usize) - 1].occupied && pos.x > 1 {
+                        map_resource.map[pos.y as usize][pos.x as usize].occupied = false;
                         pos.x = pos.x - 1;
-                        state.map[pos.y as usize][pos.x as usize] = Tile::occupied(true);
+                        map_resource.map[pos.y as usize][pos.x as usize].occupied = true;
                     }
                 }
                 Some(Key {
@@ -50,10 +50,10 @@ impl<'a> System<'a> for MovingSystem {
                     ..
                 }) =>
                 {
-                    if pos.x < SCREEN_WIDTH - 2 && !state.map[pos.y as usize][(pos.x as usize) + 1].occupied  {
-                        state.map[pos.y as usize][pos.x as usize] = Tile::default();
+                    if pos.x < SCREEN_WIDTH - 2 && !map_resource.map[pos.y as usize][(pos.x as usize) + 1].occupied  {
+                        map_resource.map[pos.y as usize][pos.x as usize].occupied = false;
                         pos.x = pos.x + 1;
-                        state.map[pos.y as usize][pos.x as usize] = Tile::occupied(true);
+                        map_resource.map[pos.y as usize][pos.x as usize].occupied = true;
                     }
                 }
                 _ => {}
