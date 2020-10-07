@@ -5,7 +5,7 @@ use tcod::{
         BackgroundFlag,Console,Root,Offscreen,blit
     },
     input::{
-        Key,KeyCode
+        Key,KeyCode,check_for_event,KEY_PRESS,MOUSE_PRESS,Event,Mouse
     },
     map::{
         Map as FovMap,FovAlgorithm
@@ -100,6 +100,34 @@ impl<'a> System<'a> for TcodSystem {
         if self.root.window_closed() {
             state.end = true;
         }
+
+        let ev = check_for_event(KEY_PRESS | MOUSE_PRESS);
+        println!("ev checked");
+        if let Some(inp) = ev {
+            match inp.1 {
+                Event::Key(Key { code: KeyCode::Escape, .. }) => {
+                    if self.root.is_fullscreen() {
+                        self.root.set_fullscreen(false)
+                    }
+                    else {
+                        state.end = true;
+                    }
+                },
+                Event::Key(Key { code: KeyCode::Enter, alt: true, .. }) => {
+                    self.root.set_fullscreen(!self.root.is_fullscreen());
+                },
+                Event::Key(key) => {
+                    for (inp, _) in (&mut input, &player).join() {
+                        inp.key = Some(key);
+                    }
+                },
+                Event::Mouse(Mouse { lbutton_pressed: false, .. }) => { },
+                Event::Mouse(mouse) => {
+                    println!("clicked {:?}", mouse);
+                }
+            }
+        }
+        /*
         let key = self.root.wait_for_keypress(false);
         match key {
             Key { code: KeyCode::Escape, .. } => {
@@ -118,5 +146,6 @@ impl<'a> System<'a> for TcodSystem {
         for (inp, _) in (&mut input, &player).join() {
             inp.key = Some(key);
         }
+        */
     }
 }

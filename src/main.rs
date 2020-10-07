@@ -29,6 +29,12 @@ use tile::Tile;
 pub mod map;
 use map::Map;
 
+pub mod health;
+use health::Health;
+
+pub mod respawn;
+use respawn::{Respawnable, RespawnSystem};
+
 const SCREEN_WIDTH: i32 = 128;
 const SCREEN_HEIGHT: i32 = 80;
 const LIMIT_FPS: i32 = 30;
@@ -48,6 +54,8 @@ fn main() {
     world.register::<Input>();
     world.register::<Position>();
     world.register::<Glyph>();
+    world.register::<Health>();
+    world.register::<Respawnable>();
 
     world.insert(GameState::default());
     world.insert(Map::default());
@@ -57,6 +65,8 @@ fn main() {
         .with(Player::default())
         .with(Input::default())
         .with(Glyph { c: '@', color: tcod::colors::RED })
+        .with(Health::default())
+        .with(Respawnable::default())
         .with(Position {
             x: SCREEN_WIDTH / 2,
             y: SCREEN_HEIGHT / 2,
@@ -65,6 +75,7 @@ fn main() {
 
     let mut dispatcher = DispatcherBuilder::new()
         .with(MovingSystem, "movingSys", &[])
+        .with(RespawnSystem, "respawnSys", &[])
         .with_thread_local(TcodSystem {
             root,
             con: Offscreen::new(SCREEN_WIDTH, SCREEN_HEIGHT),
