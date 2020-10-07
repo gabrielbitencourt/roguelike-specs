@@ -1,9 +1,10 @@
 use specs::{Builder, DispatcherBuilder, World, WorldExt};
-use tcod::console::{FontLayout, FontType, Root, Offscreen};
-use tcod::map::{Map as FovMap};
+use piston::window::WindowSettings;
+use glutin_window::GlutinWindow;
+use opengl_graphics::{GlGraphics, OpenGL};
 
 pub mod render;
-use render::TcodSystem;
+use render::piston::PistonSystem;
 
 pub mod position;
 use position::Position;
@@ -29,19 +30,17 @@ use tile::Tile;
 pub mod map;
 use map::Map;
 
-const SCREEN_WIDTH: i32 = 128;
-const SCREEN_HEIGHT: i32 = 80;
-const LIMIT_FPS: i32 = 30;
+const SCREEN_WIDTH: i32 = 100;
+const SCREEN_HEIGHT: i32 = 56;
+const TILE_SIZE: i32 = 10;
 
 fn main() {
-    let root = Root::initializer()
-        .font("arial10x10.png", FontLayout::Tcod)
-        .font_type(FontType::Greyscale)
-        .size(SCREEN_WIDTH, SCREEN_HEIGHT)
-        .title("Specs roguelike")
-        .init();
-
-    tcod::system::set_fps(LIMIT_FPS);
+    let opengl = OpenGL::V3_2;
+    let window: GlutinWindow = WindowSettings::new("Specssss game", [(SCREEN_WIDTH * TILE_SIZE) as u32, (SCREEN_HEIGHT * TILE_SIZE) as u32])
+        .graphics_api(opengl)
+        .exit_on_esc(true)
+        .build()
+        .expect("Failed to init window.");
 
     let mut world = World::new();
     world.register::<Player>();
@@ -65,16 +64,14 @@ fn main() {
 
     let mut dispatcher = DispatcherBuilder::new()
         .with(MovingSystem, "movingSys", &[])
-        .with_thread_local(TcodSystem {
-            root,
-            con: Offscreen::new(SCREEN_WIDTH, SCREEN_HEIGHT),
-            fov: FovMap::new(SCREEN_WIDTH, SCREEN_HEIGHT)
+        .with_thread_local(PistonSystem {
+            gl: GlGraphics::new(opengl),
+            window,
         })
         .build();
 
     dispatcher.setup(&mut world);
     loop {
-        println!("game loop");
         dispatcher.dispatch(&world);
         {
             let game_state = world.read_resource::<GameState>();

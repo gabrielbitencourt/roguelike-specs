@@ -1,6 +1,8 @@
 use crate::{Input,Position,Map,SCREEN_HEIGHT,SCREEN_WIDTH};
 use specs::{Join, ReadStorage, System, WriteStorage, Write};
-use tcod::input::{Key, KeyCode};
+use piston::ButtonArgs;
+use piston::Button::{Mouse,Keyboard};
+use piston::input::{MouseButton,Key};
 
 pub struct MovingSystem;
 impl<'a> System<'a> for MovingSystem {
@@ -12,8 +14,8 @@ impl<'a> System<'a> for MovingSystem {
     fn run(&mut self, (input, mut position, mut map_resource): Self::SystemData) {
         for (inp, pos) in (&input, &mut position).join() {
             match inp.key {
-                Some(Key {
-                    code: KeyCode::Up,
+                Some(ButtonArgs {
+                    button: Keyboard(Key::Up),
                     ..
                 }) =>
                 {
@@ -23,8 +25,8 @@ impl<'a> System<'a> for MovingSystem {
                         map_resource.map[pos.y as usize][pos.x as usize].occupied = true;
                     }
                 }
-                Some(Key {
-                    code: KeyCode::Down,
+                Some(ButtonArgs {
+                    button: Keyboard(Key::Down),
                     ..
                 }) =>
                 {
@@ -34,8 +36,8 @@ impl<'a> System<'a> for MovingSystem {
                         map_resource.map[pos.y as usize][pos.x as usize].occupied = true;
                     }
                 }
-                Some(Key {
-                    code: KeyCode::Left,
+                Some(ButtonArgs {
+                    button: Keyboard(Key::Left),
                     ..
                 }) =>
                 {
@@ -45,8 +47,8 @@ impl<'a> System<'a> for MovingSystem {
                         map_resource.map[pos.y as usize][pos.x as usize].occupied = true;
                     }
                 }
-                Some(Key {
-                    code: KeyCode::Right,
+                Some(ButtonArgs {
+                    button: Keyboard(Key::Right),
                     ..
                 }) =>
                 {

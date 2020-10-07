@@ -1,9 +1,9 @@
 use specs::{Component, VecStorage};
-use tcod::input::Key;
+use piston::ButtonArgs;
 
 #[derive(Default)]
 pub struct Input {
-    pub key: Option<Key>,
+    pub key: Option<ButtonArgs>,
 }
 
 impl Component for Input {
