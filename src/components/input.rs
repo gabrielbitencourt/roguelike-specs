@@ -1,9 +1,8 @@
-use specs::{Component, VecStorage};
-use piston::ButtonArgs;
+use amethyst::ecs::{Component,VecStorage};
 
 #[derive(Default)]
 pub struct Input {
-    pub key: Option<ButtonArgs>,
+    pub key: Option<usize>,
 }
 
 impl Component for Input {

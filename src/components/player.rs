@@ -1,5 +1,4 @@
-use specs::Component;
-use specs::NullStorage;
+use amethyst::ecs::{Component,NullStorage};
 
 #[derive(Default)]
 pub struct Player;

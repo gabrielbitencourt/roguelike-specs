@@ -1,4 +1,4 @@
-use specs::{Component, VecStorage};
+use amethyst::ecs::{Component,VecStorage};
 
 pub struct Position {
     pub x: i32,

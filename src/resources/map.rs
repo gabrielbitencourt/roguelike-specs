@@ -1,16 +1,17 @@
-use crate::Tile;
-use crate::SCREEN_WIDTH;
-use crate::SCREEN_HEIGHT;
+use crate::{Tile,SCREEN_HEIGHT,SCREEN_WIDTH,TILE_SIZE};
 use rand::Rng;
 
-const MAX_ROOMS: usize = 6;
-const MIN_ROOM_WIDTH: usize = 7;
-const MAX_ROOM_WIDTH: usize = 20;
-const MIN_ROOM_HEIGHT: usize = 7;
-const MAX_ROOM_HEIGHT: usize = 20;
+const MAX_ROOMS: usize = 2;
+const MIN_ROOM_WIDTH: usize = 2;
+const MAX_ROOM_WIDTH: usize = 7;
+const MIN_ROOM_HEIGHT: usize = 2;
+const MAX_ROOM_HEIGHT: usize = 7;
+
+const MAP_WIDTH: i32 = SCREEN_WIDTH / TILE_SIZE;
+const MAP_HEIGHT: i32 = SCREEN_HEIGHT / TILE_SIZE;
 
 pub struct Map {
-    pub map: [[Tile; SCREEN_WIDTH as usize]; SCREEN_HEIGHT as usize]
+    pub map: [[Tile; MAP_WIDTH as usize]; MAP_HEIGHT as usize]
 }
 
 impl Default for Map {
@@ -22,8 +23,8 @@ impl Default for Map {
 }
 
 impl Map {
-    pub fn generate_map() -> [[Tile; SCREEN_WIDTH as usize]; SCREEN_HEIGHT as usize] {
-        let mut map = [[Tile::default(); SCREEN_WIDTH as usize]; SCREEN_HEIGHT as usize];
+    pub fn generate_map() -> [[Tile; MAP_WIDTH as usize]; MAP_HEIGHT as usize] {
+        let mut map = [[Tile::default(); MAP_WIDTH as usize]; MAP_HEIGHT as usize];
 
         let n_rooms = rand::thread_rng().gen_range(1, MAX_ROOMS + 1);
         for _ in 0..n_rooms {
@@ -53,8 +54,8 @@ impl Room {
     fn procedural() -> Self {
         let width = rand::thread_rng().gen_range(MIN_ROOM_WIDTH, MAX_ROOM_WIDTH + 1);
         let height = rand::thread_rng().gen_range(MIN_ROOM_HEIGHT, MAX_ROOM_HEIGHT + 1);
-        let x = rand::thread_rng().gen_range(0, SCREEN_WIDTH as usize - width);
-        let y = rand::thread_rng().gen_range(0, SCREEN_HEIGHT as usize - height);
+        let x = rand::thread_rng().gen_range(0, MAP_WIDTH as usize - width);
+        let y = rand::thread_rng().gen_range(0, MAP_HEIGHT as usize - height);
         return Room {
             x, y, width, height
         };
