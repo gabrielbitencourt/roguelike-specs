@@ -30,8 +30,8 @@ use resources::{
     tile::Tile
 };
 
-const SCREEN_WIDTH: i32 = 500;
-const SCREEN_HEIGHT: i32 = 500;
+const SCREEN_WIDTH: i32 = 100;
+const SCREEN_HEIGHT: i32 = 100;
 const TILE_SIZE: i32 = 10;
 
 fn main() {
@@ -46,7 +46,7 @@ fn main() {
                 .with_plugin(
                     RenderToWindow::from_config_path(display_config_path)
                         .unwrap()
-                        .with_clear([0.0, 0.0, 0.0, 1.0]),
+                        .with_clear([0.0, 1.0, 0.0, 1.0]),
                 )
                 .with_plugin(RenderFlat2D::default()),
         )
@@ -57,38 +57,4 @@ fn main() {
     let assets_dir = app_root.join("assets");
     let mut game = Application::new(assets_dir, GameState::default(), game_data).unwrap();
     game.run();
-
-    // let mut world = World::new();
-    // world.register::<Player>();
-    // world.register::<Input>();
-    // world.register::<Position>();
-
-    // world.insert(GameState::default());
-    // world.insert(Map::default());
-
-    // world
-    //     .create_entity()
-    //     .with(Player::default())
-    //     .with(Input::default())
-    //     .with(Position {
-    //         x: SCREEN_WIDTH / 2,
-    //         y: SCREEN_HEIGHT / 2,
-    //     })
-    //     .build();
-
-    // let mut dispatcher = DispatcherBuilder::new()
-    //     .with(MovingSystem, "movingSys", &[])
-    //     .build();
-
-    // dispatcher.setup(&mut world);
-    // loop {
-    //     dispatcher.dispatch(&world);
-    //     {
-    //         let game_state = world.read_resource::<GameState>();
-    //         if game_state.end {
-    //             break;
-    //         }
-    //     }
-	// 	world.maintain();
-	// }
 }

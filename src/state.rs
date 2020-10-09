@@ -1,4 +1,4 @@
-use crate::{Player,Position,Input,Map};
+use crate::{Player,Position,Input,Map,SCREEN_WIDTH,SCREEN_HEIGHT};
 use amethyst::{
     assets::{AssetStorage, Handle, Loader},
     core::transform::Transform,
@@ -17,9 +17,18 @@ impl SimpleState for GameState {
         world.register::<Input>();
         world.register::<Position>();
 
+        let mut transform = Transform::default();
+        transform.set_translation_xyz(SCREEN_WIDTH as f32 * 0.5, SCREEN_HEIGHT as f32 * 0.5, 1.0);
+
+        world
+            .create_entity()
+            .with(Camera::standard_2d(SCREEN_WIDTH as f32 * 2., SCREEN_HEIGHT as f32 * 2.))
+            .with(transform)
+            .build();
+
         world.insert(Map::default());
         let mut transform = Transform::default();
-        transform.set_translation_xyz(25., 25., 0.);
+        transform.set_translation_xyz(SCREEN_WIDTH as f32 * 0.5, SCREEN_HEIGHT as f32 * 0.5, 0.0);
 
         let texture_handle = {
             let loader = world.read_resource::<Loader>();
