@@ -1,4 +1,4 @@
-use crate::{Tile,SCREEN_HEIGHT,SCREEN_WIDTH,TILE_SIZE};
+use crate::{Tile,SCREEN_HEIGHT,SCREEN_WIDTH};
 use rand::Rng;
 
 const MAX_ROOMS: usize = 2;
@@ -7,8 +7,9 @@ const MAX_ROOM_WIDTH: usize = 7;
 const MIN_ROOM_HEIGHT: usize = 2;
 const MAX_ROOM_HEIGHT: usize = 7;
 
-const MAP_WIDTH: i32 = SCREEN_WIDTH / TILE_SIZE;
-const MAP_HEIGHT: i32 = SCREEN_HEIGHT / TILE_SIZE;
+const TILE_SIZE: f32 = 10.0;
+const MAP_WIDTH: f32 = SCREEN_WIDTH / TILE_SIZE;
+const MAP_HEIGHT: f32 = SCREEN_HEIGHT / TILE_SIZE;
 
 pub struct Map {
     pub map: [[Tile; MAP_WIDTH as usize]; MAP_HEIGHT as usize]

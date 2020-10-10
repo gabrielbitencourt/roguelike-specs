@@ -1,67 +1,38 @@
-use crate::{Input,Position,Map,SCREEN_HEIGHT,SCREEN_WIDTH};
-use amethyst::ecs::{System,ReadStorage,WriteStorage,Write,Join};
+use crate::{Player,SCREEN_HEIGHT,SCREEN_WIDTH};
+use amethyst::core::{Transform,SystemDesc,timing::Time};
+use amethyst::derive::SystemDesc;
+use amethyst::ecs::{Join,Read,ReadStorage,System,SystemData,World,WriteStorage};
+use amethyst::input::{InputHandler,StringBindings};
 
 pub struct MovingSystem;
 impl<'a> System<'a> for MovingSystem {
     type SystemData = (
-        ReadStorage<'a, Input>,
-        WriteStorage<'a, Position>,
-        Write<'a, Map>
+        WriteStorage<'a, Transform>,
+        ReadStorage<'a, Player>,
+        Read<'a, InputHandler<StringBindings>>,
+        Read<'a, Time>,
     );
-    fn run(&mut self, (input, mut position, mut map_resource): Self::SystemData) {
-        for (inp, pos) in (&input, &mut position).join() {
-            if let Some(key) = inp.key {
-                match key {
-                    // Some(ButtonArgs {
-                    //     button: Keyboard(Key::Up),
-                    //     ..
-                    // }) =>
-                    1 =>
-                    {
-                        if !map_resource.map[(pos.y as usize) - 1][pos.x as usize].occupied && pos.y > 1 {
-                            map_resource.map[pos.y as usize][pos.x as usize].occupied = false;
-                            pos.y = pos.y - 1;
-                            map_resource.map[pos.y as usize][pos.x as usize].occupied = true;
-                        }
-                    }
-                    // Some(ButtonArgs {
-                    //     button: Keyboard(Key::Down),
-                    //     ..
-                    // }) =>
-                    2 =>
-                    {
-                        if pos.y < SCREEN_HEIGHT - 2 && !map_resource.map[(pos.y as usize) + 1][pos.x as usize].occupied {
-                            map_resource.map[pos.y as usize][pos.x as usize].occupied = false;
-                            pos.y = pos.y + 1;
-                            map_resource.map[pos.y as usize][pos.x as usize].occupied = true;
-                        }
-                    }
-                    // Some(ButtonArgs {
-                    //     button: Keyboard(Key::Left),
-                    //     ..
-                    // }) =>
-                    3 =>
-                    {
-                        if !map_resource.map[pos.y as usize][(pos.x as usize) - 1].occupied && pos.x > 1 {
-                            map_resource.map[pos.y as usize][pos.x as usize].occupied = false;
-                            pos.x = pos.x - 1;
-                            map_resource.map[pos.y as usize][pos.x as usize].occupied = true;
-                        }
-                    }
-                    // Some(ButtonArgs {
-                    //     button: Keyboard(Key::Right),
-                    //     ..
-                    // }) =>
-                    4 =>
-                    {
-                        if pos.x < SCREEN_WIDTH - 2 && !map_resource.map[pos.y as usize][(pos.x as usize) + 1].occupied  {
-                            map_resource.map[pos.y as usize][pos.x as usize].occupied = false;
-                            pos.x = pos.x + 1;
-                            map_resource.map[pos.y as usize][pos.x as usize].occupied = true;
-                        }
-                    }
-                    _ => {}
-                };
+    fn run(&mut self, (mut transforms, players, input, time): Self::SystemData) {
+        for (transform, player) in (&mut transforms, &players).join() {
+            if let Some(dx) = input.axis_value("x") {
+                if dx != 0. {
+                    let x = transform.translation().x;
+                    transform.set_translation_x(
+                        (x + dx * time.delta_seconds() * 30.)
+                            .min(SCREEN_WIDTH)
+                            .max(0.),
+                    );
+                }
+            }
+            if let Some(dy) = input.axis_value("y") {
+                if dy != 0. {
+                    let y = transform.translation().y;
+                    transform.set_translation_y(
+                        (y + dy * time.delta_seconds() * 30.)
+                            .min(SCREEN_HEIGHT)
+                            .max(0.),
+                    );
+                }
             }
         }
     }
